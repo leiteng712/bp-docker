@@ -1,0 +1,62 @@
+version: '3'
+services:
+  master:
+    build:
+      context: .
+    image: node
+    container_name: master
+    ports:
+      - "8088:8088"
+      - "9870:9870"
+    volumes:
+      - ./loft:/opt/loft
+    networks:
+      mynetwork:
+        ipv4_address: 199.18.0.100
+    environment:
+      HOSTNAME: master
+    depends_on:
+      - node01
+      - node02
+      - node03
+  node01:
+    build:
+      context: .
+    image: node
+    container_name: node01
+    networks:
+      mynetwork:
+        ipv4_address: 199.18.0.101
+    environment:
+      HOSTNAME: node01
+      ZOOKEEPER_ID: 1
+      KAFKA_BROKER_ID: 1
+  node02:
+    build:
+      context: .
+    image: node
+    container_name: node02
+    networks:
+      mynetwork:
+        ipv4_address: 199.18.0.102
+    environment:
+      HOSTNAME: node02
+      ZOOKEEPER_ID: 2
+      KAFKA_BROKER_ID: 2
+  node03:
+    build:
+      context: .
+    image: node
+    container_name: node03
+    networks:
+      mynetwork:
+        ipv4_address: 199.18.0.103
+    environment:
+      HOSTNAME: node03
+      ZOOKEEPER_ID: 3
+      KAFKA_BROKER_ID: 3
+networks:
+  mynetwork:
+    ipam:
+      config:
+        - subnet: 199.18.0.0/16
